@@ -42,6 +42,13 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedEntity = entityPickerData[row]
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination as? ResultsTableViewController
+        destination?.searchEntity = selectedEntity
+        destination?.searchTerm = searchTextField.text!
+        navigationItem.title = nil
+    }
 
     @IBAction func searchButton(_ sender: AnyObject) {
         
