@@ -50,9 +50,5 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         navigationItem.title = nil
     }
 
-    @IBAction func searchButton(_ sender: AnyObject) {
-        
-    }
-
 }
 

@@ -30,7 +30,6 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Search"/>
                                 <connections>
-                                    <action selector="searchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JFU-IB-hqE"/>
                                     <segue destination="tVo-Na-bhL" kind="show" identifier="ShowResultsSegue" id="Y2j-Ez-AoO"/>
                                 </connections>
                             </button>
