@@ -18,6 +18,7 @@ class ResultsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Results"
+        searchTerm = searchTerm.replacingOccurrences(of: " ", with: "_")
         let urlAsString =  baseSearchURL + searchTerm
         let url = URL(string: urlAsString)
         let urlSession = URLSession.shared
@@ -31,6 +32,7 @@ class ResultsTableViewController: UITableViewController {
                     if let results:NSArray = jsonResult["results"] as? NSArray {
                         DispatchQueue.main.async(execute: {
                             self.tableData = results
+                            self.tableView!.reloadData()
                         })
                     }
                 }
@@ -44,27 +46,28 @@ class ResultsTableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
     }
 
-    // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return tableData.count
     }
 
-    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+        let cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "cell")
+        if let rowData: NSDictionary = self.tableData[indexPath.row] as? NSDictionary,
+        let urlString = rowData["artworkUrl60"] as? String,
+        let imgURL = URL(string: urlString),
+        let trackPrice = rowData["trackPrice"] as? Double,
+            let imgData = NSData(contentsOf: imgURL),
+            let trackName = rowData["trackName"] as? String {
+            cell.detailTextLabel?.text = "$" + trackPrice.description
+            cell.imageView?.image = UIImage(data: imgData as Data)
+            cell.textLabel?.text = trackName
+        }
         return cell
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.
