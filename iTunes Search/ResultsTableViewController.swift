@@ -12,10 +12,32 @@ class ResultsTableViewController: UITableViewController {
     
     var searchEntity = ""
     var searchTerm = ""
+    let baseSearchURL = "http://itunes.apple.com/search?term="
+    var tableData:NSArray = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Results"
+        let urlAsString =  baseSearchURL + searchTerm
+        let url = URL(string: urlAsString)
+        let urlSession = URLSession.shared
+        let task = urlSession.dataTask(with: url!, completionHandler: { (data, response, error) -> Void in
+            print("Task completed.")
+            if(error != nil) {
+                print(error!.localizedDescription)
+            }
+            do {
+                if let jsonResult = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as? NSDictionary {
+                    if let results:NSArray = jsonResult["results"] as? NSArray {
+                        DispatchQueue.main.async(execute: {
+                            self.tableData = results
+                        })
+                    }
+                }
+            }
+            catch {}
+        })
+        task.resume()
     }
 
     override func didReceiveMemoryWarning() {
