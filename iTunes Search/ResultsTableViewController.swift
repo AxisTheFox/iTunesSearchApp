@@ -12,14 +12,15 @@ class ResultsTableViewController: UITableViewController {
     
     var searchEntity = ""
     var searchTerm = ""
-    let baseSearchURL = "http://itunes.apple.com/search?term="
+    var searchURL = ""
     var resultsData:NSArray = []
+    var resultsObjects = [ResultObject]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Results"
-        searchTerm = searchTerm.replacingOccurrences(of: " ", with: "+")
-        let urlAsString =  baseSearchURL + searchTerm
+        let searchURL = buildSearchUrlString()
+        let urlAsString = searchURL
         let url = URL(string: urlAsString)
         let urlSession = URLSession.shared
         let task = urlSession.dataTask(with: url!, completionHandler: { (data, response, error) -> Void in
@@ -45,6 +46,18 @@ class ResultsTableViewController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    func buildSearchUrlString() -> String {
+        searchTerm = searchTerm.replacingOccurrences(of: " ", with: "+")
+        if (searchEntity == "Movies") {
+            searchTerm = searchTerm + "&entity=movie"
+        }
+        if (searchEntity == "Software") {
+            searchTerm = searchTerm + "&entity=software"
+        }
+        let baseSearchURL = "http://itunes.apple.com/search?term="
+        return baseSearchURL + searchTerm
+    }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -56,62 +69,36 @@ class ResultsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "cell")
-        if let rowData: NSDictionary = self.resultsData[indexPath.row] as? NSDictionary,
-        let urlString = rowData["artworkUrl30"] as? String,
-        let imgURL = URL(string: urlString),
-        let trackPrice = rowData["trackPrice"] as? Double,
-            let imgData = NSData(contentsOf: imgURL),
-            let trackName = rowData["trackName"] as? String {
-            cell.detailTextLabel?.text = "$" + trackPrice.description
-            cell.imageView?.image = UIImage(data: imgData as Data)
-            cell.textLabel?.text = trackName
+        let rowData:NSDictionary = (self.resultsData[indexPath.row] as? NSDictionary)!
+        if (searchEntity == "Movies") {
+            let m = MovieResult()
+            m.trackName = (rowData["trackName"] as? String)!
+            m.contentAdvisoryRating = (rowData["contentAdvisoryRating"] as? String)!
+            m.imageData = NSData(contentsOf: (URL(string: (rowData["artworkUrl30"] as? String)!))!)
+            m.longDescription = (rowData["longDescription"] as? String)!
+            m.primaryGenreName = (rowData["primaryGenreName"] as? String)!
+            m.trackHdPrice = (rowData["trackHdPrice"] as? Double)!
+            resultsObjects.append(m)
+        } else if (searchEntity == "Software") {
+            let s = SoftwareResult()
+            s.artistName = (rowData["artistName"] as? String)!
+            s.price = (rowData["price"] as? String)!
+            s.supportedDevices = (rowData["supportedDevices"] as? String)!
+            s.description = (rowData["description"] as? String)!
+            s.genres = (rowData["genres"] as? String)!
+            s.screenshot1 = NSData(contentsOf: (URL(string: (rowData["genres"] as? String)!))!)
+            s.screenshot2 = NSData(contentsOf: (URL(string: (rowData["genres"] as? String)!))!)
+            resultsObjects.append(s)
+        } else {
+            
+        }
+        
+        if (searchEntity == "Movies") {
+            cell.textLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! MovieResult).trackName
+            cell.detailTextLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! MovieResult).contentAdvisoryRating
+            cell.imageView?.image = UIImage(data: ((resultsObjects[(indexPath as NSIndexPath).row]) as! MovieResult).imageData as! Data)
         }
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
