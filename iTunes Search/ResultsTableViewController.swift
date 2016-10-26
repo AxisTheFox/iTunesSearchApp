@@ -73,30 +73,30 @@ class ResultsTableViewController: UITableViewController {
         if (searchEntity == "Movies") {
             let m = MovieResult()
             m.trackName = (rowData["trackName"] as? String)!
-            m.contentAdvisoryRating = (rowData["contentAdvisoryRating"] as? String)!
             m.imageData = NSData(contentsOf: (URL(string: (rowData["artworkUrl30"] as? String)!))!)
-            m.longDescription = (rowData["longDescription"] as? String)!
-            m.primaryGenreName = (rowData["primaryGenreName"] as? String)!
-            m.trackHdPrice = (rowData["trackHdPrice"] as? Double)!
             resultsObjects.append(m)
         } else if (searchEntity == "Software") {
             let s = SoftwareResult()
             s.artistName = (rowData["artistName"] as? String)!
-            s.price = (rowData["price"] as? String)!
-            s.supportedDevices = (rowData["supportedDevices"] as? String)!
-            s.description = (rowData["description"] as? String)!
-            s.genres = (rowData["genres"] as? String)!
-            s.screenshot1 = NSData(contentsOf: (URL(string: (rowData["genres"] as? String)!))!)
-            s.screenshot2 = NSData(contentsOf: (URL(string: (rowData["genres"] as? String)!))!)
             resultsObjects.append(s)
         } else {
-            
+            let av = AudioVideoResult()
+            av.trackName = (rowData["trackName"] as? String)!
+            av.collectionName = (rowData["collectionName"] as? String)!
+            av.imageData = NSData(contentsOf: (URL(string: (rowData["artworkUrl30"] as? String)!))!)
+            resultsObjects.append(av)
         }
         
         if (searchEntity == "Movies") {
             cell.textLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! MovieResult).trackName
             cell.detailTextLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! MovieResult).contentAdvisoryRating
             cell.imageView?.image = UIImage(data: ((resultsObjects[(indexPath as NSIndexPath).row]) as! MovieResult).imageData as! Data)
+        } else if (searchEntity == "Software") {
+            cell.textLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! SoftwareResult).artistName
+        } else {
+            cell.textLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! AudioVideoResult).trackName
+            cell.detailTextLabel?.text = (resultsObjects[(indexPath as NSIndexPath).row] as! AudioVideoResult).trackName
+            cell.imageView?.image = UIImage(data: ((resultsObjects[(indexPath as NSIndexPath).row]) as! AudioVideoResult).imageData as! Data)
         }
         return cell
     }
