@@ -10,10 +10,10 @@ import Foundation
 
 class SoftwareResult: ResultObject {
     var artistName = ""
-    var price = ""
-    var supportedDevices = ""
+    var price = 0.00
+    var supportedDevices = [String]()
     var description = ""
-    var genres = ""
+    var genres = [String]()
     var screenshot1:NSData? = nil
     var screenshot2:NSData? = nil
 }

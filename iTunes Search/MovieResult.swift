@@ -14,5 +14,5 @@ class MovieResult: ResultObject {
     var imageData:NSData? = nil
     var longDescription = ""
     var primaryGenreName = ""
-    var trackHdPrice = 0.0
+    var trackHdPrice = 0.00
 }

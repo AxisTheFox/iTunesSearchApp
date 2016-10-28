@@ -13,6 +13,6 @@ class AudioVideoResult: ResultObject {
     var artistName = ""
     var collectionName = ""
     var imageData:NSData? = nil
-    var trackPrice:Double = 0.0
-    var collectionPrice:Double = 0.0
+    var trackPrice:Double = 0.00
+    var collectionPrice:Double = 0.00
 }
